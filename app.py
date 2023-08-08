@@ -1,3 +1,10 @@
+# setting some environment variables 
+#cmd :  set FLASK_APP=app.py in windows and 
+#cmd : export FLASK_APP = app.py in linux
+# To turn the debug mod on we need to run following command 
+#cmd : set FLASK_DEBUG=1
+
+
 from flask import Flask #,jsonify,request, render_template
 
 app = Flask(__name__)
