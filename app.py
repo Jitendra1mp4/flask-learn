@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 @app.route("/home")
-def home_page():
+def homepage():
     return render_template("homepage.html")
 
 
@@ -17,4 +17,4 @@ def users_page():
         {"id": 3, "name": "John Cally", "phone": "954871554", "address": "Navapara"},
         {"id": 4, "name": "Sita Kumar", "phone": "684548754", "address": "Abhanpur"},
     ]
-    return render_template("users.html", users=users)
+    return render_template("users_page.html", users=users)
