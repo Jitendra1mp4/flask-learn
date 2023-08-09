@@ -1,20 +1,40 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
+app.config["MYSQL_HOST"] = "localhost"
+app.config["MYSQL_USER"] = "root"
+app.config["MYSQL_PASSWORD"] = ""
+app.config["MYSQL_DB"] = "test"
 
-@app.route("/")
-@app.route("/home")
+mysql = MySQL(app)
+
+
+@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 def homepage():
+    if request.method == "POST":
+        uname = request.form.get('uname')
+        passw = request.form.get('passw')
+        cur = mysql.connection.cursor()
+        qurry = "insert into users (name,phone) VALUES (%s,%s);"
+        print(uname, passw)
+        print(qurry)
+        res = cur.execute(qurry, (uname, passw))
+        print("res ", res)
+        mysql.connection.commit()
+        cur.close()
+        return "<h1>Successfully Inserted Data</h1>"
     return render_template("homepage.html")
 
 
 @app.route("/users")
 def users_page():
-    users = [
-        {"id": 1, "name": "Jitendra Kumar", "phone": "914355335", "address": "Raipur"},
-        {"id": 2, "name": "Fake Gurus", "phone": "787554844", "address": "Rajim"},
-        {"id": 3, "name": "John Cally", "phone": "954871554", "address": "Navapara"},
-        {"id": 4, "name": "Sita Kumar", "phone": "684548754", "address": "Abhanpur"},
-    ]
-    return render_template("users_page.html", users=users)
+    cur = mysql.connection.cursor()
+    listItems = cur.execute("select * from users")
+    if listItems > 0:
+        users = cur.fetchall()
+        cur.close()
+        return render_template("users_page.html", users=users)
+    return "<h1> We got nothing</h1>"
